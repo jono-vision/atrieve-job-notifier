@@ -1,0 +1,54 @@
+site_name: atrieve-job-notifier
+repo_url: https://github.com/jono-vision/atrieve-job-notifier
+site_url: https://jono-vision.github.io/atrieve-job-notifier
+site_description: ThiThis is a program to notify the user of new teaching job posting from the Atrieve Job Portal
+site_author: Jonathan Down
+edit_uri: edit/main/docs/
+repo_name: jono-vision/atrieve-job-notifier
+copyright: Maintained by <a href="https://jono-vision.com">Florian</a>.
+
+nav:
+  - Home: index.md
+  - Modules: modules.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+            setup_commands:
+                - import sys
+                - sys.path.append('../')
+theme:
+  name: material
+  feature:
+    tabs: true
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jono-vision/atrieve-job-notifier
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/atrieve-job-notifier
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
