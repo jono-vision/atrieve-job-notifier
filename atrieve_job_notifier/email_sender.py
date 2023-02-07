@@ -15,7 +15,7 @@ def _message_maker(jobs):
 def send_email(jobs, email_to, email_from, email_from_password, email_cc=''):
     message = _message_maker(jobs)
 
-    subject = f"{len(jobs.keys())} Job(s) Found"
+    subject = f"{len(jobs.keys())} New Teaching Job(s) Available On Atrieve"
     
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)

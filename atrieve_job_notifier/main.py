@@ -24,17 +24,14 @@ MIN_JOB_DURATION = 4  # Minimum job duration to be notified for
 JOBS_TO_NOTIFY = {}
 
 # Generate a key for encryption
-cookie_key_filename = "cookie_key.txt"
-with open(cookie_key_filename, "r") as file:
-    content = file.read()
-    if not content.strip():
-        print("COOKIE_KEY not found in environment variables.")
-        cookie_key = Fernet.generate_key()
-        with open(cookie_key_filename, 'w') as file:
-            file.write(cookie_key.decode())
-    else:
-        # print("The file is not empty.")
-        cookie_key = content.encode()
+cookie_key = keyring.get_password('cookie_key', 'cookie_key') # String representation
+if cookie_key is None:
+    print("COOKIE_KEY not found in keychain. Creating a key...")
+    cookie_key = Fernet.generate_key() # bytes representation
+    keyring.set_password('cookie_key', 'cookie_key', cookie_key.decode()) # Save key in string format
+else:
+    # key exists in keychain
+    cookie_key = cookie_key.encode() #convert to binary
 
 cipher_suite = Fernet(cookie_key)
 
@@ -143,8 +140,8 @@ for board_name, board_info in config_data['boards'].items():
             print('Cookies were successful')
             pass
         
-        # driver.get_screenshot_as_file(f"jobs_{board_name}.png")
-        print(driver.current_url.lower())
+        driver.get_screenshot_as_file(f"jobs_{board_name}.png")
+        # print(driver.current_url.lower())
 
         # Failed login skip to next school board
         if "login" in driver.current_url.lower():
