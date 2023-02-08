@@ -6,42 +6,26 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/jono-vision/atrieve-job-notifier)](https://img.shields.io/github/commit-activity/m/jono-vision/atrieve-job-notifier)
 [![License](https://img.shields.io/github/license/jono-vision/atrieve-job-notifier)](https://img.shields.io/github/license/jono-vision/atrieve-job-notifier)
 
-ThiThis is a program to notify the user of new teaching job posting from the Atrieve Job Portal
+This is a program to notify the user of new teaching job posting from the Atrieve Job Portal
 
 - **Github repository**: <https://github.com/jono-vision/atrieve-job-notifier/>
 - **Documentation** <https://jono-vision.github.io/atrieve-job-notifier/>
 
 ## Getting started with your project
 
-First, create a repository on GitHub with the same name as this project, and then run the following commands:
+First, change directory in your home directory and make sure git is installed on your computer:
 
-``` bash
-git init -b main
-git add .
-git commit -m "init commit"
-git remote add origin git@github.com:jono-vision/atrieve-job-notifier.git
-git push -u origin main
-```
-
-Finally, install the environment and the pre-commit hooks with 
+If poetry is not installed on your computer
+instructions can be found here https://python-poetry.org/docs/
 
 ```bash
-make install
+cd ~/
+git clone https://github.com/jono-vision/atrieve-job-notifier.git
+cd atrieve-job-notifier
+poetry install
 ```
 
-You are now ready to start development on your project! The CI/CD
-pipeline will be triggered when you open a pull request, merge to main,
-or when you create a new release.
-
-To finalize the set-up for publishing to PyPi or Artifactory, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
-
 ## Releasing a new version
-
-
 
 ---
 
