@@ -1,3 +1,5 @@
+DISCLAIMER: Does not currently work as the project sits right now. It is missing a config.toml file
+
 # Job Board Automation
 
 This is a code to automate the process of logging in and scraping job information from multiple job boards. The code uses Poetry as a package manager.
