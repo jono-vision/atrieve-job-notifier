@@ -90,8 +90,9 @@ for board_name, board_info in config_data['boards'].items():
         break
 
     # Load cookies if they exist
+    cookies_file_path = os.path.join(parent_directory, f"cookies_{board_name}.pkl")
     try:
-        with open(f"cookies_{board_name}.pkl", "rb") as f:
+        with open(cookies_file_path, "rb") as f:
             encrypted_cookies = pickle.load(f)
             cookies = json.loads(cipher_suite.decrypt(encrypted_cookies).decode())
     except FileNotFoundError:
@@ -141,7 +142,8 @@ for board_name, board_info in config_data['boards'].items():
             print('Cookies were successful')
             pass
         
-        driver.get_screenshot_as_file(f"jobs_{board_name}.png")
+        screenshot_file_path = os.path.join(parent_directory, f"jobs_{board_name}.png")
+        driver.get_screenshot_as_file(screenshot_file_path)
         # print(driver.current_url.lower())
 
         # Failed login skip to next school board
