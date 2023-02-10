@@ -44,7 +44,7 @@ options.add_argument("--disable-gpu")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-accelerated-2d-canvas")
 options.add_argument("--disable-accelerated-jpeg-decoding")
-options.add_argument("--MOZ_JETSTREAM_ENABLE=false")
+# options.add_argument("--MOZ_JETSTREAM_ENABLE=false")
 options.add_argument("--MOZ_FORCE_DISABLE_E10S=1")
 
 # Load in past jobs file or create file if none exists

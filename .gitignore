@@ -169,3 +169,5 @@ config.toml
 *.json
 *.log
 .DS_Store
+*.png
+*.pkl
