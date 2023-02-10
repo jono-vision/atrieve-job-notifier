@@ -71,13 +71,12 @@ The script main.py will now run every 10 minutes, as specified by the crontab en
 
 ## Lessons Learned
 
-- I learned a lot from this program and appreciate CHATGPT's help as my mentor, answering all of my questions.
 - I gained knowledge in the Cryptography and Keychain libraries, which I hadn't used before. The project deals with sensitive information, such as passwords and cookies, which need to be stored securely.
 - I learned about running Selenium in headless mode, which was a new discovery for me.
 - Using Poetry for virtual environment management was a first for me and I still need to determine which I prefer between Poetry and venv.
 - I discovered the wheel package, but found that it doesn't transfer between different operating systems.
 - My understanding of virtual environments improved and I'm still investigating running a Python script through crontab while accessing the virtual environment.
-- ChatGPT is both awesome and maybe terrible? I feel like Im using steroids and am kinda cheating. I guess this is what it felt like to be Jose Canseco.
+- Firefox webdriver did not work on windows when running from task scheduler. Would only run from command prompt when using "Run As Administrator" running the program through task scheduler and using the option to run with highest privileges didn't solve it either. Simply replacing firefox with Chrome solved the issue.
 
 ## To-Do:
 
