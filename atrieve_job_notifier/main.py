@@ -22,6 +22,7 @@ grand_parent_directory = os.path.dirname(parent_directory)
 
 MIN_JOB_DURATION = 4  # Minimum job duration to be notified for
 JOBS_TO_NOTIFY = {}
+new_jobs_found = False
 
 # Generate a key for encryption
 cookie_key = keyring.get_password('cookie_key', 'cookie_key') # String representation
@@ -155,13 +156,13 @@ for board_name, board_info in config_data['boards'].items():
         jobs_body = soup.find('tbody') # Find tag where jobs are found
 
         if jobs_body: # if there are jobs
-            jobs_found = True
             jobs_html_list = jobs_body.select('tr')
             for job_row in jobs_html_list:
                 job_information = job_row.select('td')
                 job_id = job_information[0].getText().strip()
                 # print(job_id)
                 if job_id not in past_jobs_data.keys():
+                    new_jobs_found = True
                     job_dictionary = {
                         'starttime': job_information[6].getText().split("-")[0],
                         'endtime': job_information[6].getText().split("-")[1],
@@ -184,9 +185,10 @@ for board_name, board_info in config_data['boards'].items():
                     # Add job to dump into JSON
                     past_jobs_data[job_id] = job_dictionary
 
-# Write the updated data to the file
-with open(past_jobs_filepath, 'w') as file:
-    json.dump(past_jobs_data, file, indent=4)
+if new_jobs_found:
+    # Write the updated data to the file
+    with open(past_jobs_filepath, 'w') as file:
+        json.dump(past_jobs_data, file, indent=4)
 
 
 if JOBS_TO_NOTIFY != {}:
