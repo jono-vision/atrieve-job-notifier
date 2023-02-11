@@ -1,5 +1,7 @@
 # Job Board Automation
 
+_If using a Windows please use the chrome_branch. Both Windows and Mac work on the chrome branch_
+
 This is a code to automate the process of logging in and scraping job information from multiple job boards. The code uses Poetry as a package manager.
 
 ## Requirements
