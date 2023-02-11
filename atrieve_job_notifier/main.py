@@ -1,9 +1,8 @@
-import os
+import os, platform
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 import pickle, json, time, toml, keyring
 from datetime import datetime
@@ -37,6 +36,7 @@ else:
 cipher_suite = Fernet(cookie_key)
 
 # Webdriver Options
+system = platform.system()
 options = Options()
 options.add_argument("--window-size=768,1024")
 options.add_argument("--headless")
@@ -45,8 +45,18 @@ options.add_argument("--disable-gpu")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-accelerated-2d-canvas")
 options.add_argument("--disable-accelerated-jpeg-decoding")
-# options.add_argument("--MOZ_JETSTREAM_ENABLE=false")
-options.add_argument("--MOZ_FORCE_DISABLE_E10S=1")
+options.add_argument("--disable-infobars")
+options.add_argument("--disable-notifications")
+
+# Get location of Chrome depending on OS
+if system == "Windows":
+    options.binary_location = "C:/Program Files/Google/Chrome/Application/chrome.exe"
+elif system == "Darwin": # Mac
+    # Chrome driver is in the environment variables
+    pass
+else: # Linux
+    # options.binary_location = "/usr/bin/google-chrome" # Untested
+    pass
 
 # Load in past jobs file or create file if none exists
 past_jobs_filepath = os.path.join(parent_directory, 'past_jobs.json')
@@ -74,7 +84,7 @@ def get_duration_in_hours(start_time, end_time):
     duration = end_time - start_time
     return round(duration.total_seconds() / 3600,1) 
 
-geckodriver_install = GeckoDriverManager().install()
+chromedriver_install = ChromeDriverManager().install()
 
 for board_name, board_info in config_data['boards'].items():
     # Initialize variables for board
@@ -98,9 +108,9 @@ for board_name, board_info in config_data['boards'].items():
     except FileNotFoundError:
         cookies = {}
 
-    service = Service(executable_path=geckodriver_install)
+    # service = Service(executable_path=geckodriver_install)
     # Start a virtual Firefox web browser
-    with webdriver.Firefox(service=service, options=options) as driver:
+    with webdriver.Chrome(options=options) as driver:
         driver.get(jobboard_web_address) # Needed or else get an error trying to load cookies
         if cookies != {}:
             for cookie in cookies:
@@ -134,16 +144,15 @@ for board_name, board_info in config_data['boards'].items():
                 # Encrypt cookies
                 cookies_str = json.dumps(driver.get_cookies())
                 encrypted_cookies = cipher_suite.encrypt(bytes(cookies_str, 'utf-8'))
-                pickle.dump(encrypted_cookies, open(f"cookies_{board_name}.pkl","wb"))
+                pickle.dump(encrypted_cookies, open(cookies_file_path,"wb"))
                 driver.get(jobboard_web_address)
                 time.sleep(1)
 
         else:
             print('Cookies were successful')
             pass
-        
-        screenshot_file_path = os.path.join(parent_directory, f"jobs_{board_name}.png")
-        driver.get_screenshot_as_file(screenshot_file_path)
+        job_board_image_path = os.path.join(parent_directory, f"jobs_{board_name}.png")
+        driver.get_screenshot_as_file(job_board_image_path)
         # print(driver.current_url.lower())
 
         # Failed login skip to next school board
