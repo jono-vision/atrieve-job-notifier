@@ -1,5 +1,3 @@
-DISCLAIMER: Does not currently work as the project sits right now. It is missing a config.toml file
-
 # Job Board Automation
 
 This is a code to automate the process of logging in and scraping job information from multiple job boards. The code uses Poetry as a package manager.
@@ -24,6 +22,8 @@ poetry install
 ```
 
 Update the configuration file with the necessary information for each job board you want to scrape.
+
+Open the config_template.toml and enter in your usernames, school board names and web-links of the login page as well as the link where the job postings are. Also be sure to fill in your email information at the bottom too. Your from email has to be a gmail email and I would recommend a burner email. You then have to obtain an app password which would be entered on this file.
 
 Run the main.py script to log in and scrape job information:
 
