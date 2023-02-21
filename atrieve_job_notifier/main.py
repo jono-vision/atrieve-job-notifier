@@ -180,7 +180,6 @@ for board_name, board_info in config_data['boards'].items():
                         'startdate': job_information[1].getText(),
                         'enddate': job_information[2].getText(),
                         'subject': job_information[3].getText(),
-                        'role': job_information[4].getText(),
                         'location': job_information[5].getText(),
                         'duration_in_hours': '',
                         'link': jobboard_web_address,
@@ -203,6 +202,7 @@ if new_jobs_found:
 
 
 if JOBS_TO_NOTIFY != {}:
+    print('New Jobs Found')
     email_to = config_data['email']['emailto']
     email_from = config_data['email']['emailfrom']
     email_cc = config_data['email']['emailcc']
