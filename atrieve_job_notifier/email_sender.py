@@ -3,9 +3,7 @@ import smtplib
 def _message_maker(jobs):
     message = ""
     for _, value in jobs.items():
-        message += f"Subject: {value['subject']}\n"
-        message += f"Role: {value['role']}\n"
-        message += f"Location: {value['location']}\n"
+        message += f"{value['subject']} @ {value['location']}\n"
         message += f"Time: {value['starttime']} - {value['endtime']}\n"
         message += f"Date: {value['startdate']} - {value['enddate']}\n"
         message += f"Link: {value['link']}\n\n"
