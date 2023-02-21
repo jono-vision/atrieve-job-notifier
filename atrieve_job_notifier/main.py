@@ -215,3 +215,5 @@ if JOBS_TO_NOTIFY != {}:
         email_from_password=email_from_password, 
         email_cc=email_cc
         )
+else:
+    print("No new jobs found")
