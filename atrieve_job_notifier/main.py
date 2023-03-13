@@ -190,17 +190,9 @@ if new_jobs_found:
 
 if JOBS_TO_NOTIFY != {}:
     print('New Jobs Found')
-    email_to = config_data['email']['emailto']
-    email_from = config_data['email']['emailfrom']
-    email_cc = config_data['email']['emailcc']
-    email_from_password = config_data['email']['password']
     # print(email_to, email_from, email_cc)
     email_sender.send_email(
-        jobs=JOBS_TO_NOTIFY,
-        email_to=email_to, 
-        email_from=email_from, 
-        email_from_password=email_from_password, 
-        email_cc=email_cc
+        jobs=JOBS_TO_NOTIFY
         )
 else:
     print("No new jobs found")
