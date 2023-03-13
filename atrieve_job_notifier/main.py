@@ -1,39 +1,26 @@
-import os, platform
+import platform
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
-import pickle, json, time, toml, keyring
+import pickle, json, time, toml
+from pathlib import Path
 from datetime import datetime
 import email_sender
-from cryptography.fernet import Fernet
-
 
 # Get the absolute path of the current file
-current_file_path = os.path.abspath(__file__)
+current_file_path = Path(__file__).resolve()
 
 # Get the parent directory of the current file
-parent_directory = os.path.dirname(current_file_path)
+parent_directory = current_file_path.parent
 
 # Get the parent directory of the parent directory
-grand_parent_directory = os.path.dirname(parent_directory)
+grand_parent_directory = parent_directory.parent
 
 MIN_JOB_DURATION = 4  # Minimum job duration to be notified for
 JOBS_TO_NOTIFY = {}
 new_jobs_found = False
-
-# Generate a key for encryption
-cookie_key = keyring.get_password('cookie_key', 'cookie_key') # String representation
-if cookie_key is None:
-    print("COOKIE_KEY not found in keychain. Creating a key...")
-    cookie_key = Fernet.generate_key() # bytes representation
-    keyring.set_password('cookie_key', 'cookie_key', cookie_key.decode()) # Save key in string format
-else:
-    # key exists in keychain
-    cookie_key = cookie_key.encode() #convert to binary
-
-cipher_suite = Fernet(cookie_key)
 
 # Webdriver Options
 system = platform.system()
@@ -55,11 +42,11 @@ elif system == "Darwin": # Mac
     # Chrome driver is in the environment variables
     pass
 else: # Linux
-    # options.binary_location = "/usr/bin/google-chrome" # Untested
+    options.binary_location = "/usr/bin/google-chrome" # Untested
     pass
 
 # Load in past jobs file or create file if none exists
-past_jobs_filepath = os.path.join(parent_directory, 'past_jobs.json')
+past_jobs_filepath = parent_directory / 'past_jobs.json'
 
 try:
     with open(past_jobs_filepath, 'r') as file:
@@ -71,7 +58,7 @@ except FileNotFoundError:
 
 
 # Join the grand parent directory and the config file name
-config_file_path = os.path.join(grand_parent_directory, "config.toml")
+config_file_path = grand_parent_directory / "config.toml"
 
 # Load school board information
 with open(config_file_path, "r") as file:
@@ -84,7 +71,8 @@ def get_duration_in_hours(start_time, end_time):
     duration = end_time - start_time
     return round(duration.total_seconds() / 3600,1) 
 
-chromedriver_install = ChromeDriverManager().install()
+# chromedriver_install = ChromeDriverManager().install()
+chrome_driver_path = "/Users/jonathandown/Downloads/chromedriver_mac64/chromedriver"
 
 for board_name, board_info in config_data['boards'].items():
     # Initialize variables for board
@@ -92,25 +80,25 @@ for board_name, board_info in config_data['boards'].items():
     board_login_name = f"atrieve_{board_name}"
     login_web_address = board_info[0]['login']
     jobboard_web_address = board_info[0]['jobboard']
-    password = keyring.get_password(board_login_name, username)
+    password = board_info[0]['password']
 
     # Catch empty passwords prompting the user to enter a password
-    if password is None:
-        print("Please run the password_init.py file to set your passwords as they are currently empty")
-        break
+    # if password is None:
+    #     print("Please run the password_init.py file to set your passwords as they are currently empty")
+    #     break
 
     # Load cookies if they exist
-    cookies_file_path = os.path.join(parent_directory, f"cookies_{board_name}.pkl")
+    cookies_file_path = parent_directory / (f"cookies_{board_name}.pkl")
     try:
         with open(cookies_file_path, "rb") as f:
-            encrypted_cookies = pickle.load(f)
-            cookies = json.loads(cipher_suite.decrypt(encrypted_cookies).decode())
-    except FileNotFoundError:
+            cookies = pickle.load(f)
+            # cookies = json.loads(cipher_suite.decrypt(encrypted_cookies).decode())
+    except (EOFError, FileNotFoundError):
         cookies = {}
 
     # service = Service(executable_path=geckodriver_install)
     # Start a virtual Firefox web browser
-    with webdriver.Chrome(options=options) as driver:
+    with webdriver.Chrome(executable_path=chrome_driver_path, options=options) as driver:
         driver.get(jobboard_web_address) # Needed or else get an error trying to load cookies
         if cookies != {}:
             for cookie in cookies:
@@ -142,16 +130,15 @@ for board_name, board_info in config_data['boards'].items():
             
             if "login" not in driver.current_url.lower(): # Login success and save cookies
                 # Encrypt cookies
-                cookies_str = json.dumps(driver.get_cookies())
-                encrypted_cookies = cipher_suite.encrypt(bytes(cookies_str, 'utf-8'))
-                pickle.dump(encrypted_cookies, open(cookies_file_path,"wb"))
+                with open(cookies_file_path, "wb") as f:
+                    pickle.dump(driver.get_cookies(), f)
                 driver.get(jobboard_web_address)
                 time.sleep(1)
 
         else:
             print('Cookies were successful')
             pass
-        job_board_image_path = os.path.join(parent_directory, f"jobs_{board_name}.png")
+        job_board_image_path = parent_directory / (f"jobs_{board_name}.png")
         driver.get_screenshot_as_file(job_board_image_path)
         # print(driver.current_url.lower())
 
