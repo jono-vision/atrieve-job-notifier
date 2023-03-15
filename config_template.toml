@@ -3,12 +3,14 @@
 [[boards.blackgold]]
 name = "blackgold"
 username = "username"
+password = ""
 login = "https://ab07.atrieveerp.com/blackgold/public/ExternalLogin.aspx"
 jobboard = "https://ab07.atrieveerp.com/blackgold/servlet/Broker?env=ads&template=ads.JobShop1.xml"
 
 [[boards.parkland]]
 name = "parkland"
 username = "username"
+password = ""
 login = "https://ab07.atrieveerp.com/parkland/public/ExternalLogin.aspx"
 jobboard = "https://ab07.atrieveerp.com/parkland/servlet/Broker?env=ads&template=ads.JobShop1.xml"
 
