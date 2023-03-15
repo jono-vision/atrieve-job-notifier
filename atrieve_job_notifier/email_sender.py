@@ -18,8 +18,8 @@ def _message_maker(jobs):
     message_str = ""
     sms_message_str = ""
     for _, value in jobs.items():
-        message_str += f"{value['subject']} @ {value['location']}\n"
-        sms_message_str += f"{value['subject']} @ {value['location']}\n"
+        message_str += f"{value['subject']} @ {value['location']} ({value['board']})\n"
+        sms_message_str += f"{value['subject']} @ {value['location']} ({value['board']})\n"
         message_str += f"Time: {value['starttime']} - {value['endtime']}\n"
         sms_message_str += f"Time: {value['starttime']} - {value['endtime']}\n"
         message_str += f"Date: {value['startdate']} - {value['enddate']}\n"

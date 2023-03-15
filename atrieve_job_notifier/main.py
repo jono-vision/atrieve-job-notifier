@@ -155,6 +155,7 @@ for board_name, board_info in config_data['boards'].items():
                 if job_id not in past_jobs_data.keys():
                     new_jobs_found = True
                     job_dictionary = {
+                        'board': board_name,
                         'starttime': job_information[6].getText().split("-")[0],
                         'endtime': job_information[6].getText().split("-")[1],
                         'startdate': job_information[1].getText(),
