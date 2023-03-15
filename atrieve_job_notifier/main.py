@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 import pickle, json, time, toml
 from pathlib import Path
@@ -71,8 +72,7 @@ def get_duration_in_hours(start_time, end_time):
     duration = end_time - start_time
     return round(duration.total_seconds() / 3600,1) 
 
-# chromedriver_install = ChromeDriverManager().install()
-chrome_driver_path = "/Users/jonathandown/Downloads/chromedriver_mac64/chromedriver"
+chromedriver_path = ChromeDriverManager().install()
 
 for board_name, board_info in config_data['boards'].items():
     # Initialize variables for board
@@ -83,27 +83,26 @@ for board_name, board_info in config_data['boards'].items():
     password = board_info[0]['password']
 
     # Catch empty passwords prompting the user to enter a password
-    # if password is None:
-    #     print("Please run the password_init.py file to set your passwords as they are currently empty")
-    #     break
+    if password is None:
+        print("Please run the password_init.py file to set your passwords as they are currently empty")
+        break
 
     # Load cookies if they exist
     cookies_file_path = parent_directory / (f"cookies_{board_name}.pkl")
     try:
         with open(cookies_file_path, "rb") as f:
             cookies = pickle.load(f)
-            # cookies = json.loads(cipher_suite.decrypt(encrypted_cookies).decode())
     except (EOFError, FileNotFoundError):
         cookies = {}
 
-    # service = Service(executable_path=geckodriver_install)
-    # Start a virtual Firefox web browser
-    with webdriver.Chrome(executable_path=chrome_driver_path, options=options) as driver:
+    service = Service(executable_path=chromedriver_path)
+    service.start()
+    with webdriver.Chrome(service=service, options=options) as driver:
         driver.get(jobboard_web_address) # Needed or else get an error trying to load cookies
         if cookies != {}:
             for cookie in cookies:
                 driver.add_cookie(cookie)
-            # With cookies attempt at opening job pag
+            # With cookies attempt at opening job page
             driver.get(jobboard_web_address)
 
         # If login present means we got denied access using the cookies
@@ -111,7 +110,6 @@ for board_name, board_info in config_data['boards'].items():
             print('cookies didnt work')
             driver.delete_all_cookies() # Causes error or fails without
             driver.get(login_web_address)
-            # driver.get_screenshot_as_file(f"login{board_name}.png")
             
             # Enter Username
             userElem = driver.find_element("id","Username")
@@ -120,7 +118,6 @@ for board_name, board_info in config_data['boards'].items():
             # Enter Password
             passElem = driver.find_element('name','Password')
             passElem.send_keys(password) # Input Password
-            # driver.get_screenshot_as_file(f"b4login{board_name}.png")
             time.sleep(0.1)
             
             # Click login button
@@ -129,7 +126,6 @@ for board_name, board_info in config_data['boards'].items():
             time.sleep(1)
             
             if "login" not in driver.current_url.lower(): # Login success and save cookies
-                # Encrypt cookies
                 with open(cookies_file_path, "wb") as f:
                     pickle.dump(driver.get_cookies(), f)
                 driver.get(jobboard_web_address)
@@ -140,13 +136,10 @@ for board_name, board_info in config_data['boards'].items():
             pass
         job_board_image_path = parent_directory / (f"jobs_{board_name}.png")
         driver.get_screenshot_as_file(job_board_image_path)
-        # print(driver.current_url.lower())
 
         # Failed login skip to next school board
         if "login" in driver.current_url.lower():
             continue
-        
-        # print(f"{board_name} signed in")
 
         # Generate the HTML of the page
         rawcontent = driver.page_source
@@ -181,6 +174,7 @@ for board_name, board_info in config_data['boards'].items():
                     
                     # Add job to dump into JSON
                     past_jobs_data[job_id] = job_dictionary
+    service.stop()
 
 if new_jobs_found:
     # Write the updated data to the file

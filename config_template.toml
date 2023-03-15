@@ -17,3 +17,6 @@ emailto = "youremail@gmail.com"
 emailcc = "someother_email@email.com"
 emailfrom = "throw_away_email@gmail.com"
 password = "app_password"
+mobile_number = "5551234567@msg.telus.com"
+smtp_server = "smtp.gmail.com"  # Replace with your email provider's SMTP server
+smtp_port = "587"  # Replace with your email provider's SMTP port
