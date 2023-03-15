@@ -14,8 +14,14 @@ grand_parent_directory = parent_directory.parent
 config_file_path = grand_parent_directory/ "config.toml"
 
 # Load the toml file
-with open(config_file_path, 'r') as f:
-    config = toml.load(f)
+try:
+    with open(config_file_path, 'r') as f:
+        config = toml.load(f)
+except FileNotFoundError:
+    print('Config file not found, creating config file from template...')
+    print('Manually edit the resulting config.toml file if boards presented do not apply to you')
+    with open(grand_parent_directory/"config_template.toml", 'r') as f:
+        config = toml.load(f)
 
 config_data = config['boards']
 # print(config_data['blackgold'])
@@ -31,11 +37,12 @@ for board in config_data.keys():
     board_username = board_info['username']
     board_password = board_info['password']
 
-    if board_password is not None:
+    if board_password != "":
         # Ask the user if they want to keep the existing password or update it
+        print(board_password)
         change_password = input(f'Password already exists for {board}. Would you like to update it? (y/n): ')
             
-    if board_password is None or change_password.lower() == 'y':
+    if board_password == "" or change_password.lower() == 'y':
         # Ask the user to enter their password for the board
         board_password = input(f'Enter password for {board}: ')
         password_is_updated = True
