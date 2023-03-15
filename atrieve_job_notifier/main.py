@@ -26,6 +26,7 @@ new_jobs_found = False
 # Webdriver Options
 system = platform.system()
 options = Options()
+options.add_argument("--no-sandbox")
 options.add_argument("--window-size=768,1024")
 options.add_argument("--headless")
 options.add_argument("--disable-extensions")
